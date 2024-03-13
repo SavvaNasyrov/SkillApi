@@ -29,8 +29,8 @@ namespace SkillApi.Controllers
             await db.SaveChangesAsync();
             return Ok();
         }
-        [HttpGet]
-        public async Task<IActionResult> GetFilteredApplesAsync(Dictionary<string, string> pairs) 
+        [HttpPost]
+        public IActionResult GetFilteredApplesAsync([FromBody]Dictionary<string, string> pairs) 
         {
             if (pairs == null || pairs.Count() == 0) return Ok(db.Apples.ToArrayAsync());
 
@@ -39,7 +39,11 @@ namespace SkillApi.Controllers
             if (pairs.ContainsKey("type"))
             {
                 apples = apples.Where(apple => apple.Type.ToString() == pairs["type"]);
-            }
+            } if (pairs.ContainsKey("from"))
+            {
+                apples = apples.Where(apple => apple.From == pairs["from"]);
+            } 
+            return Ok(apples);
         }
     }
 }
